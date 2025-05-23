@@ -15,13 +15,13 @@ public class PatientService : IPatientService
         _context = context;
     }
     public async Task<GetPatientDTO> GetPatientInfoAsync(int id, CancellationToken ct)
-    {
+    {/*
         var patient = await _context.Patient
             .Include(p => p.Prescriptions)
-            .ThenInclude(p => p.PrescriptionMedicaments)
-            .ThenInclude(pm => pm.Medicament)
+                .ThenInclude(p => p.PrescriptionMedicaments)
+                    .ThenInclude(pm => pm.Medicament)
             .Include(p => p.Prescriptions)
-            .ThenInclude(p => p.Doctor)
+                .ThenInclude(p => p.Doctor)
             .FirstOrDefaultAsync(p => p.IdPatient == id, ct);
         if (patient == null)
         {
@@ -34,19 +34,19 @@ public class PatientService : IPatientService
             FirstName = patient.FirstName,
             LastName = patient.LastName,
             BirthDate = patient.BirthDate,
-            Prescriptions = patient.Prescriptions.Select(pres => new GetPrescriptionDTO
+            Prescriptions = patient.Prescriptions.Select(p => new GetPrescriptionDTO
             {
-                IdPrescription = pres.IdPrescription,
-                Date = pres.Date,
-                DueDate = pres.DueDate,
+                IdPrescription = p.IdPrescription,
+                Date = p.Date,
+                DueDate = p.DueDate,
                 doctor = new Doctor
                 {
-                    IdDoctor = pres.Doctor.IdDoctor,
-                    FirstName = pres.Doctor.FirstName,
-                    LastName = pres.Doctor.LastName,
-                    Email = pres.Doctor.Email
+                    IdDoctor = p.Doctor.IdDoctor,
+                    FirstName = p.Doctor.FirstName,
+                    LastName = p.Doctor.LastName,
+                    Email = p.Doctor.Email
                 },
-                Medicaments = pres.PrescriptionMedicaments.Select(pm => new GetMedicamentDTO
+                Medicaments = p.PrescriptionMedicaments.Select(pm => new GetMedicamentDTO
                 {
                     IdMedicament = pm.Medicament.IdMedicament,
                     Name = pm.Medicament.Name,
@@ -54,10 +54,43 @@ public class PatientService : IPatientService
                     Dose = pm.Dose
                 }).ToList()
             }).ToList()
-        };
+        };*/
         
+        var patient = await _context.Patient.Select(p => new GetPatientDTO
+        {
+            IdPatient = p.IdPatient,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            BirthDate = p.BirthDate,
+            Prescriptions = p.Prescriptions
+                .OrderBy(pres => pres.DueDate)
+                .Select(pres => new GetPrescriptionDTO
+                {
+                    IdPrescription = pres.IdPrescription,
+                    Date = pres.Date,
+                    DueDate = pres.DueDate,
+                    Medicaments = pres.PrescriptionMedicaments.Select(pm => new GetMedicamentDTO
+                    {
+                        IdMedicament = pm.IdMedicament,
+                        Name = pm.Medicament.Name,
+                        Dose = pm.Dose,
+                        Description = pm.Medicament.Description
+                    }).ToList(),
+                    doctor = new Doctor()
+                    {
+                        IdDoctor = pres.IdDoctor,
+                        FirstName = pres.Doctor.FirstName,
+                        LastName = pres.Doctor.LastName,
+                        Email = pres.Doctor.Email,
+                    }
+                }).ToList(),
+        }).FirstOrDefaultAsync(p => p.IdPatient == id);
+        if (patient == null)
+        {
+            throw new NotFoundException("Patient not found");
+        }
         
-        return pat;
+        return patient;
 
     }
 }

@@ -19,4 +19,5 @@ public class Patient
     public DateTime BirthDate { get; set; }
     
     public virtual ICollection<Prescription> Prescriptions { get; set; }
+    //znaczy że Patient może mieć wiele Prescription
 }

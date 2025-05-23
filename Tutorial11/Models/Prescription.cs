@@ -23,4 +23,5 @@ public class Prescription
     public Patient Patient { get; set; }
     
     public virtual ICollection<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
+    //znaczy że Prescription może mieć wiele PrescriptionMedicament
 }
