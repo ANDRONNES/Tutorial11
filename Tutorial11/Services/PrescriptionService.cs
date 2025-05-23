@@ -45,9 +45,13 @@ public class PrescriptionService : IPrescriptionService
             newIdPatient = patient.IdPatient;
         }
 
-        if (prescriptionDto.medicaments.Count >= 10)
+        if (prescriptionDto.medicaments.Count  >= 10 )
         {
             throw new BadRequestException("The prescription can contain max 10 medicaments at the same time.");
+        }
+        if (prescriptionDto.medicaments.Count  <= 0)
+        {
+            throw new BadRequestException("The prescription must contain at least one medicament.");
         }
         /*foreach (var medic in prescriptionDto.medicaments)
         {
