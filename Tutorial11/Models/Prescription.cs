@@ -21,4 +21,6 @@ public class Prescription
     public Doctor Doctor { get; set; }
     [ForeignKey(nameof(IdPatient))]
     public Patient Patient { get; set; }
+    
+    public virtual ICollection<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
 }

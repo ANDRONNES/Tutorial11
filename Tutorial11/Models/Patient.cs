@@ -17,4 +17,6 @@ public class Patient
     
     [Required] 
     public DateTime BirthDate { get; set; }
+    
+    public virtual ICollection<Prescription> Prescriptions { get; set; }
 }
