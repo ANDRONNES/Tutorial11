@@ -12,26 +12,14 @@ public class ClinicDbContext : DbContext
     public DbSet<Prescription> Prescription { get; set; }
     public DbSet<PrescriptionMedicament> PrescriptionMedicament { get; set; }
 
-    protected ClinicDbContext()
-    {
-    }
-
-    public ClinicDbContext(DbContextOptions options) : base(options)
+    public ClinicDbContext(DbContextOptions<ClinicDbContext> options) : base(options)
     {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        /*modelBuilder.Entity<Doctor>(entity =>  Postgres nie potrzebuje nvarchar jak sqlserver, bo od razu w swoim varchar obsługuje unicode
-        {
-            entity.Property(p => p.FirstName).HasColumnType("nvarchar(100)");
-            entity.Property(p => p.LastName).HasColumnType("nvarchar(100)");
-            entity.Property(p => p.Email).HasColumnType("nvarchar(100)");
-        });*/
         modelBuilder.Entity<Patient>(entity =>
             {
-                // entity.Property(p => p.FirstName).HasColumnType("nvarchar(100)");
-                // entity.Property(p => p.LastName).HasColumnType("nvarchar(100)");
                 entity.Property(p => p.BirthDate).HasColumnType("date");
             });
             
@@ -40,12 +28,5 @@ public class ClinicDbContext : DbContext
                 entity.Property(p => p.Date).HasColumnType("date");
                 entity.Property(p => p.DueDate).HasColumnType("date");
             });
-        /*modelBuilder.Entity<Medicament>(entity =>
-        {
-            entity.Property(p => p.Name).HasColumnType("nvarchar(100)");
-            entity.Property(p => p.Description).HasColumnType("nvarchar(100)");
-            entity.Property(p => p.Type).HasColumnType("nvarchar(100)");
-        });*/
-            
     }
 }

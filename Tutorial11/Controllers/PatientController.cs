@@ -16,6 +16,13 @@ public class PatientController : ControllerBase
         _patientService = patientService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetPatients()
+    {
+        var clients = await _patientService.GetPatientsAsync();
+        return Ok(clients);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetPrescription(int id, CancellationToken ct)
     {
